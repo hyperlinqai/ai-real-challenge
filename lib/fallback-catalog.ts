@@ -10,7 +10,7 @@ export const fallbackCatalog = [
     vibe: "heritage",
     budgetLevel: "moderate",
     tags: ["forts", "crafts", "royal", "street food"],
-    heroImage: "/images/jaipur.jpg",
+    heroImage: "https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=900&q=80",
     location: "Rajasthan, India",
     attractions: [
       {
@@ -48,7 +48,7 @@ export const fallbackCatalog = [
     vibe: "nature",
     budgetLevel: "moderate",
     tags: ["tea", "hiking", "wildlife"],
-    heroImage: "/images/munnar.jpg",
+    heroImage: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=900&q=80",
     location: "Western Ghats, Kerala",
     attractions: [
       {
@@ -78,7 +78,7 @@ export const fallbackCatalog = [
     vibe: "spiritual",
     budgetLevel: "budget",
     tags: ["ghats", "ganga", "temples"],
-    heroImage: "/images/varanasi.jpg",
+    heroImage: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=900&q=80",
     location: "Uttar Pradesh, India",
     attractions: [
       {

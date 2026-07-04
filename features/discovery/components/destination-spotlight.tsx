@@ -1,8 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { MapPin } from "lucide-react";
+
+import { TravelImage } from "@/components/ui/travel-image";
 
 import { SPOTLIGHT_DESTINATIONS } from "@/lib/destination-media";
 import type { RagUserProfile } from "@/lib/schemas/rag";
@@ -53,7 +54,7 @@ export function DestinationSpotlight({ activeName, onPick, className }: Props) {
                 selected && "ring-2 ring-accent",
               )}
             >
-              <Image
+              <TravelImage
                 src={dest.images[0]!}
                 alt={`${dest.name}, ${dest.state}`}
                 fill
@@ -104,7 +105,7 @@ export function HeroPhotoStrip({ className }: { className?: string }) {
             i === 1 && "md:-mt-4 md:mb-4",
           )}
         >
-          <Image src={src} alt="" fill className="object-cover" sizes="(max-width:768px) 33vw, 240px" />
+          <TravelImage src={src} alt="" fill className="object-cover" sizes="(max-width:768px) 33vw, 240px" />
         </div>
       ))}
     </div>

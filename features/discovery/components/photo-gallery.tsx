@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { TravelImage } from "@/components/ui/travel-image";
 import { useCallback, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
 
@@ -54,7 +54,7 @@ export function PhotoGallery({ images, title, className }: Props) {
           </Button>
         </div>
         <div className="relative aspect-[21/9] overflow-hidden rounded-2xl bg-secondary">
-          <Image
+          <TravelImage
             src={images[index]!}
             alt={`${title} photo ${index + 1}`}
             fill
@@ -104,7 +104,7 @@ export function PhotoGallery({ images, title, className }: Props) {
               aria-label={`Show photo ${i + 1}`}
               aria-current={i === index}
             >
-              <Image src={src} alt="" fill className="object-cover" sizes="96px" />
+              <TravelImage src={src} alt="" fill className="object-cover" sizes="96px" />
             </button>
           ))}
         </div>
@@ -133,7 +133,7 @@ export function PhotoGallery({ images, title, className }: Props) {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl">
-              <Image
+              <TravelImage
                 src={images[index]!}
                 alt={`${title} enlarged`}
                 fill

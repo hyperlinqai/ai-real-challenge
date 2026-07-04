@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { TravelImage } from "@/components/ui/travel-image";
 import { useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
 
@@ -86,7 +86,7 @@ export function RagResultsPanel({
     <div className={cn("space-y-6", className)}>
       <Card className="travel-card-shadow overflow-hidden border-0">
         <div className="relative min-h-[220px]">
-          <Image
+          <TravelImage
             src={hero}
             alt={`${data.destination.name} travel`}
             fill
