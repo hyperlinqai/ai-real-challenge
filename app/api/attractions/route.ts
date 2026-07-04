@@ -1,18 +1,13 @@
-import { NextResponse } from "next/server";
+import { createGetJsonHandler } from "@/lib/api";
 import { databaseService } from "@/services/database/database.service";
-import { jsonError } from "@/lib/api";
 
 export const runtime = "nodejs";
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const destinationId = searchParams.get("destinationId") ?? undefined;
-
-  try {
+export const GET = createGetJsonHandler({
+  fallbackError: "Failed to load attractions",
+  handler: async (request) => {
+    const destinationId = new URL(request.url).searchParams.get("destinationId") ?? undefined;
     const attractions = await databaseService.listAttractions(destinationId);
-    return NextResponse.json({ attractions });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to load attractions";
-    return jsonError(message, 500);
-  }
-}
+    return { attractions };
+  },
+});

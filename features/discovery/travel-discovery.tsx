@@ -30,6 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ProblemStatementFit } from "@/features/discovery/components/problem-statement-fit";
 import { RagResultsPanel } from "@/features/discovery/components/rag-results-panel";
 import {
   DestinationSpotlight,
@@ -178,6 +179,8 @@ export function TravelDiscovery() {
           </div>
         </div>
       </header>
+
+      <ProblemStatementFit />
 
       <section className="travel-hero-gradient text-white">
         <div className="mx-auto max-w-6xl px-4 py-12 md:px-6 md:py-16">

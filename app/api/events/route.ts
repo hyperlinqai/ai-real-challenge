@@ -1,22 +1,12 @@
-import { NextResponse } from "next/server";
+import { createPostJsonHandler } from "@/lib/api";
 import { eventsRequestSchema } from "@/lib/schemas/events";
-import { clientSafeErrorMessage, jsonError, parseAndValidateBody } from "@/lib/api";
 import { eventsService } from "@/services/events/events.service";
 
 export const runtime = "nodejs";
 
-export async function POST(request: Request) {
-  const validated = await parseAndValidateBody(
-    request,
-    eventsRequestSchema,
-    "Invalid events request",
-  );
-  if (!validated.ok) return validated.response;
-
-  try {
-    const data = await eventsService.recommendEvents(validated.data);
-    return NextResponse.json(data);
-  } catch (error) {
-    return jsonError(clientSafeErrorMessage(error, "Event recommendation failed"), 502);
-  }
-}
+export const POST = createPostJsonHandler({
+  schema: eventsRequestSchema,
+  invalidLabel: "Invalid events request",
+  fallbackError: "Event recommendation failed",
+  handler: async (data) => eventsService.recommendEvents(data),
+});

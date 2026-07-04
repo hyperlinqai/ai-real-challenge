@@ -1,15 +1,11 @@
-import { NextResponse } from "next/server";
+import { createGetJsonHandler } from "@/lib/api";
 import { databaseService } from "@/services/database/database.service";
-import { jsonError } from "@/lib/api";
 
 export const runtime = "nodejs";
 
-export async function GET() {
-  try {
-    const destinations = await databaseService.listDestinations();
-    return NextResponse.json({ destinations });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to load destinations";
-    return jsonError(message, 500);
-  }
-}
+export const GET = createGetJsonHandler({
+  fallbackError: "Failed to load destinations",
+  handler: async () => ({
+    destinations: await databaseService.listDestinations(),
+  }),
+});

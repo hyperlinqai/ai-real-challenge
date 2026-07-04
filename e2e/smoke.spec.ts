@@ -4,6 +4,7 @@ test.describe("WanderMind smoke", () => {
   test("home page loads trip planner", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByRole("heading", { level: 1 })).toContainText("India trip");
+    await expect(page.getByText(/problem statement/i)).toBeVisible();
     await expect(page.getByRole("link", { name: /skip to trip planner/i })).toBeAttached();
     await expect(page.getByRole("button", { name: /build grounded itinerary/i })).toBeVisible();
   });

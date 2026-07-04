@@ -47,3 +47,42 @@ export async function parseAndValidateBody<T>(
 
   return { ok: true, data: parsed.data };
 }
+
+/** Shared POST JSON pipeline: validate → execute → JSON or safe 502. */
+export function createPostJsonHandler<T>(options: {
+  schema: ZodType<T>;
+  invalidLabel?: string;
+  fallbackError: string;
+  handler: (data: T, request: Request) => Promise<unknown>;
+}) {
+  return async function POST(request: Request): Promise<NextResponse> {
+    const validated = await parseAndValidateBody(
+      request,
+      options.schema,
+      options.invalidLabel,
+    );
+    if (!validated.ok) return validated.response;
+
+    try {
+      const payload = await options.handler(validated.data, request);
+      return NextResponse.json(payload);
+    } catch (error) {
+      return jsonError(clientSafeErrorMessage(error, options.fallbackError), 502);
+    }
+  };
+}
+
+/** Shared GET pipeline with production-safe 500 errors. */
+export function createGetJsonHandler(options: {
+  fallbackError: string;
+  handler: (request: Request) => Promise<unknown>;
+}) {
+  return async function GET(request: Request): Promise<NextResponse> {
+    try {
+      const payload = await options.handler(request);
+      return NextResponse.json(payload);
+    } catch (error) {
+      return jsonError(clientSafeErrorMessage(error, options.fallbackError), 500);
+    }
+  };
+}

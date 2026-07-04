@@ -39,7 +39,7 @@ npm run build
 npm run db:check      # with .env
 ```
 
-Docs: [SECURITY.md](./docs/SECURITY.md) · [PROBLEM_STATEMENT_ALIGNMENT.md](./docs/PROBLEM_STATEMENT_ALIGNMENT.md) · UI scorecard at **`/quality`**
+Docs: [ARCHITECTURE.md](./docs/ARCHITECTURE.md) · [SECURITY.md](./docs/SECURITY.md) · [PROBLEM_STATEMENT_ALIGNMENT.md](./docs/PROBLEM_STATEMENT_ALIGNMENT.md) · UI scorecard at **`/quality`**
 
 ## Architecture (short)
 

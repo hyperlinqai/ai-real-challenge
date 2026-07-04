@@ -26,13 +26,17 @@ export function PhotoGallery({ images, title, className }: Props) {
 
   useEffect(() => {
     if (!lightbox) return;
+    document.body.style.overflow = "hidden";
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setLightbox(false);
       if (e.key === "ArrowLeft") go(-1);
       if (e.key === "ArrowRight") go(1);
     };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
   }, [lightbox, go]);
 
   if (images.length === 0) return null;

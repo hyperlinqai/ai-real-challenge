@@ -24,7 +24,7 @@ Use this matrix when demoing or submitting. Status reflects the current codebase
 
 | Area | Status | Notes |
 |------|--------|--------|
-| Layering | Strong | `app/` routes → `services/` → `lib/` schemas & DB |
+| Layering | Strong | Shared `createPostJsonHandler` / `createGetJsonHandler`; see `docs/ARCHITECTURE.md` |
 | Validation | Strong | Zod on API inputs; shared `parseAndValidateBody` |
 | Types | Good | Shared `types/`, generated Prisma client |
 | Consistency | Good | Feature module `features/discovery/` |
