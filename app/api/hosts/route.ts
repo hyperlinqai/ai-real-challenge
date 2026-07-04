@@ -1,23 +1,18 @@
 import { NextResponse } from "next/server";
 import { hostsRequestSchema } from "@/lib/schemas/hosts";
-import { jsonError, parseJsonBody } from "@/lib/api";
+import { clientSafeErrorMessage, jsonError, parseAndValidateBody } from "@/lib/api";
 import { hostsService } from "@/services/hosts/hosts.service";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
-  const body = await parseJsonBody<unknown>(request);
-  const parsed = hostsRequestSchema.safeParse(body);
-
-  if (!parsed.success) {
-    return jsonError("Invalid hosts request", 400, parsed.error.flatten());
-  }
+  const validated = await parseAndValidateBody(request, hostsRequestSchema, "Invalid hosts request");
+  if (!validated.ok) return validated.response;
 
   try {
-    const data = await hostsService.matchHosts(parsed.data);
+    const data = await hostsService.matchHosts(validated.data);
     return NextResponse.json(data);
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Host matching failed";
-    return jsonError(message, 502);
+    return jsonError(clientSafeErrorMessage(error, "Host matching failed"), 502);
   }
 }

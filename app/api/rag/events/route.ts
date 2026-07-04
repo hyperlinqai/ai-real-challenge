@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { jsonError, parseJsonBody } from "@/lib/api";
+import { clientSafeErrorMessage, jsonError, parseAndValidateBody } from "@/lib/api";
 import { ragUserProfileSchema } from "@/lib/schemas/rag";
 import { eventsService } from "@/services/events/events.service";
 import { databaseService } from "@/services/database/database.service";
@@ -8,29 +8,25 @@ import { fallbackCatalog } from "@/lib/fallback-catalog";
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
-  const body = await parseJsonBody<unknown>(request);
-  const parsed = ragUserProfileSchema.safeParse(body);
-  if (!parsed.success) {
-    return jsonError("Invalid profile", 400, parsed.error.flatten());
-  }
+  const validated = await parseAndValidateBody(request, ragUserProfileSchema, "Invalid profile");
+  if (!validated.ok) return validated.response;
 
   try {
     const catalog = await databaseService.getDestinationCatalog();
     const dest =
       catalog.find((d) =>
-        parsed.data.destinationHint
-          ? d.name.toLowerCase().includes(parsed.data.destinationHint.toLowerCase())
+        validated.data.destinationHint
+          ? d.name.toLowerCase().includes(validated.data.destinationHint.toLowerCase())
           : true,
       ) ?? fallbackCatalog[0];
 
     const data = await eventsService.recommendEvents({
       destinationId: dest.id,
-      interests: parsed.data.interests,
-      vibe: parsed.data.vibe,
+      interests: validated.data.interests,
+      vibe: validated.data.vibe,
     });
     return NextResponse.json({ ...data, sources: ["Local Database", "Events"] });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Events failed";
-    return jsonError(message, 502);
+    return jsonError(clientSafeErrorMessage(error, "Events failed"), 502);
   }
 }

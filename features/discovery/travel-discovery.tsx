@@ -126,10 +126,16 @@ export function TravelDiscovery() {
 
   return (
     <div className="min-h-screen bg-background">
+      <a
+        href="#trip-planner"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-primary focus:shadow-lg"
+      >
+        Skip to trip planner
+      </a>
       <header className="sticky top-0 z-20 border-b border-border/80 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 md:px-6">
           <div className="flex items-center gap-2">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-primary text-primary-foreground" aria-hidden>
               <Compass className="size-5" />
             </div>
             <div>
@@ -157,13 +163,20 @@ export function TravelDiscovery() {
         </div>
       </section>
 
-      <main className="mx-auto max-w-6xl space-y-10 px-4 py-8 md:px-6 md:py-10">
+      <main id="trip-planner" className="mx-auto max-w-6xl space-y-10 px-4 py-8 md:px-6 md:py-10">
         <Card className="travel-card-shadow -mt-12 border-0 md:-mt-16">
           <CardContent className="p-6 md:p-8">
-            <form onSubmit={onSubmit} className="space-y-6">
+            <form onSubmit={onSubmit} className="space-y-6" aria-labelledby="planner-heading">
+              <h2 id="planner-heading" className="sr-only">
+                Plan your India trip
+              </h2>
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
+                <Label htmlFor="destination-hint" className="sr-only">
+                  Destination hint (optional)
+                </Label>
+                <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" aria-hidden />
                 <Input
+                  id="destination-hint"
                   className="h-14 rounded-2xl border-0 bg-secondary pl-12 text-base shadow-inner"
                   placeholder="Destination hint (optional) — e.g. Jaipur, Kerala, Varanasi"
                   {...form.register("destinationHint")}
@@ -186,9 +199,10 @@ export function TravelDiscovery() {
               </div>
 
               <div>
-                <Label>Interests</Label>
+                <Label htmlFor="interest-input">Interests</Label>
                 <div className="mt-2 flex gap-2">
                   <Input
+                    id="interest-input"
                     value={interestInput}
                     onChange={(e) => setInterestInput(e.target.value)}
                     placeholder="Add interest"
@@ -203,23 +217,28 @@ export function TravelDiscovery() {
                     Add
                   </Button>
                 </div>
-                <div className="mt-2 flex flex-wrap gap-2">
+                <ul className="mt-2 flex flex-wrap gap-2" aria-label="Selected interests">
                   {interests.map((tag) => (
-                    <Badge
-                      key={tag}
-                      className="cursor-pointer rounded-full"
-                      onClick={() =>
-                        form.setValue(
-                          "interests",
-                          interests.filter((i) => i !== tag),
-                          { shouldValidate: true },
-                        )
-                      }
-                    >
-                      {tag} ×
-                    </Badge>
+                    <li key={tag}>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        className="h-7 rounded-full px-3 text-xs font-normal"
+                        aria-label={`Remove interest ${tag}`}
+                        onClick={() =>
+                          form.setValue(
+                            "interests",
+                            interests.filter((i) => i !== tag),
+                            { shouldValidate: true },
+                          )
+                        }
+                      >
+                        {tag} ×
+                      </Button>
+                    </li>
                   ))}
-                </div>
+                </ul>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -313,7 +332,8 @@ export function TravelDiscovery() {
         </Card>
 
         {recommendMutation.isPending && (
-          <div className="space-y-4">
+          <div className="space-y-4" role="status" aria-live="polite" aria-busy="true">
+            <p className="sr-only">Loading your grounded itinerary</p>
             <Skeleton className="h-48 rounded-2xl" />
             <div className="grid gap-4 md:grid-cols-2">
               <Skeleton className="h-36 rounded-2xl" />
@@ -322,7 +342,11 @@ export function TravelDiscovery() {
           </div>
         )}
 
-        {ragResult && !recommendMutation.isPending && <RagResultsPanel data={ragResult} />}
+        {ragResult && !recommendMutation.isPending && (
+          <div aria-live="polite">
+            <RagResultsPanel data={ragResult} />
+          </div>
+        )}
 
         {ragResult && (
           <Card className="travel-card-shadow border-0" id="story">
