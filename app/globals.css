@@ -1,0 +1,64 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-travel-blue: var(--travel-blue);
+  --color-travel-saffron: var(--travel-saffron);
+  --color-travel-sky: var(--travel-sky);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --radius-lg: var(--radius);
+}
+
+:root {
+  --travel-blue: #003580;
+  --travel-saffron: #ff9933;
+  --travel-sky: #e8f2ff;
+  --background: #f4f6fb;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --primary: var(--travel-blue);
+  --primary-foreground: #ffffff;
+  --secondary: #eef2f8;
+  --secondary-foreground: #0f172a;
+  --muted: #eef2f8;
+  --muted-foreground: #64748b;
+  --accent: var(--travel-saffron);
+  --accent-foreground: #1a1a1a;
+  --border: #dbe3f0;
+  --input: #ffffff;
+  --ring: #003580;
+  --radius: 1rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
+
+@layer utilities {
+  .travel-hero-gradient {
+    background: linear-gradient(135deg, #003580 0%, #0057b8 45%, #0ea5e9 100%);
+  }
+  .travel-card-shadow {
+    box-shadow: 0 8px 30px rgba(0, 53, 128, 0.08);
+  }
+}

@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum BudgetLevel {
+  BUDGET
+  MODERATE
+  PREMIUM
+  LUXURY
+}
+
+enum TravelVibe {
+  OFFBEAT
+  SPIRITUAL
+  ADVENTURE
+  FOODIE
+  HERITAGE
+  NATURE
+}
+
+model Destination {
+  id          String      @id @default(cuid())
+  name        String
+  state       String
+  country     String      @default("India")
+  description String      @db.Text
+  vibe        TravelVibe
+  budgetLevel BudgetLevel @map("budget_level")
+  tags        String[]
+  heroImage   String?     @map("hero_image")
+  location    String?
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  attractions Attraction[]
+  events      Event[]
+  localHosts  LocalHost[]
+
+  @@map("destinations")
+}
+
+model Attraction {
+  id            String   @id @default(cuid())
+  destinationId String   @map("destination_id")
+  name          String
+  description   String   @db.Text
+  category      String
+  hiddenGem     Boolean  @default(false) @map("hidden_gem")
+  latitude      Float?
+  longitude     Float?
+  tags          String[]
+  embedding     Float[]  @default([])
+
+  destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+
+  @@index([destinationId])
+  @@map("attractions")
+}
+
+model Event {
+  id            String   @id @default(cuid())
+  destinationId String   @map("destination_id")
+  title         String
+  description   String   @db.Text
+  eventDate     DateTime @map("event_date")
+  category      String
+
+  destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+
+  @@index([destinationId])
+  @@map("events")
+}
+
+model LocalHost {
+  id            String   @id @default(cuid())
+  destinationId String   @map("destination_id")
+  name          String
+  profession    String
+  specialties   String[]
+  bio           String   @db.Text
+
+  destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+
+  @@index([destinationId])
+  @@map("local_hosts")
+}
+
+model CachedAiResponse {
+  id         String   @id @default(cuid())
+  promptHash String   @unique @map("prompt_hash")
+  response   String   @db.Text
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("cached_ai_responses")
+}
+
+enum KnowledgeSourceType {
+  WIKIPEDIA
+  WIKIVOYAGE
+  LOCAL_DATABASE
+  HIDDEN_GEMS
+  EVENTS
+  TRAVEL_TIPS
+  STORY
+  HOST
+  ATTRACTION
+}
+
+model KnowledgeDocument {
+  id              String              @id @default(cuid())
+  source          KnowledgeSourceType
+  externalKey     String?             @map("external_key")
+  title           String
+  summary         String?             @db.Text
+  description     String              @db.Text
+  tags            String[]
+  destinationName String?             @map("destination_name")
+  embedding       Float[]             @default([])
+  metadata        Json?
+  createdAt       DateTime            @default(now()) @map("created_at")
+  updatedAt       DateTime            @updatedAt @map("updated_at")
+
+  @@unique([source, externalKey])
+  @@index([destinationName])
+  @@map("knowledge_documents")
+}
+
+model IngestionLog {
+  id        String   @id @default(cuid())
+  source    String
+  status    String
+  message   String?  @db.Text
+  itemCount Int      @default(0) @map("item_count")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("ingestion_logs")
+}
