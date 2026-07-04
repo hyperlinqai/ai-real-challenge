@@ -54,7 +54,20 @@ export class DatabaseService {
 
   async listDestinations() {
     if (!(await isDatabaseAvailable())) {
-      return fallbackCatalog.map(({ attractions: _a, ...rest }) => rest);
+      return fallbackCatalog.map(
+        ({ id, name, state, country, description, vibe, budgetLevel, tags, heroImage, location }) => ({
+          id,
+          name,
+          state,
+          country,
+          description,
+          vibe,
+          budgetLevel,
+          tags,
+          heroImage,
+          location,
+        }),
+      );
     }
     return prisma.destination.findMany({
       orderBy: { name: "asc" },

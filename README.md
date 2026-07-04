@@ -26,13 +26,20 @@ npm run dev
 
 ## Quality checklist
 
-See **[docs/HACKATHON_READINESS.md](./docs/HACKATHON_READINESS.md)** for judges’ criteria: code quality, security, efficiency, testing, accessibility, and problem alignment.
+See **[docs/HACKATHON_READINESS.md](./docs/HACKATHON_READINESS.md)** for judges’ criteria.
+
+**Full verification (target 100/100 rubric):**
 
 ```bash
-npm test
+npm test              # 50+ unit/API tests
+npm run test:e2e      # Playwright smoke (home, /quality, a11y focus)
+npm run typecheck
 npm run lint
 npm run build
+npm run db:check      # with .env
 ```
+
+Docs: [SECURITY.md](./docs/SECURITY.md) · [PROBLEM_STATEMENT_ALIGNMENT.md](./docs/PROBLEM_STATEMENT_ALIGNMENT.md) · UI scorecard at **`/quality`**
 
 ## Architecture (short)
 

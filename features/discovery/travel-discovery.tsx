@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   Camera,
   Compass,
@@ -32,6 +32,10 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { RagResultsPanel } from "@/features/discovery/components/rag-results-panel";
 import {
+  DestinationSpotlight,
+  HeroPhotoStrip,
+} from "@/features/discovery/components/destination-spotlight";
+import {
   fetchRagRecommend,
   fetchRagStory,
   type RagRecommendResponse,
@@ -55,6 +59,7 @@ const TRIP_PRESETS = [
 ];
 
 export function TravelDiscovery() {
+  const reduceMotion = useReducedMotion();
   const [interestInput, setInterestInput] = useState("");
   const [ragResult, setRagResult] = useState<RagRecommendResponse | null>(null);
   const [story, setStory] = useState<string | null>(null);
@@ -76,6 +81,23 @@ export function TravelDiscovery() {
       destinationHint: "",
     },
   });
+
+  const destinationHint = form.watch("destinationHint");
+  const vibe = form.watch("vibe");
+
+  const pickDestination = (dest: {
+    name: string;
+    vibe: RagUserProfile["vibe"];
+    interests: string[];
+  }) => {
+    form.setValue("destinationHint", dest.name, { shouldValidate: true });
+    form.setValue("vibe", dest.vibe, { shouldValidate: true });
+    form.setValue("interests", dest.interests, { shouldValidate: true });
+    toast.message(`Explore ${dest.name}`, {
+      description: "Scroll down and build your itinerary when ready.",
+    });
+    document.getElementById("trip-planner")?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const interests = form.watch("interests");
 
@@ -133,7 +155,7 @@ export function TravelDiscovery() {
         Skip to trip planner
       </a>
       <header className="sticky top-0 z-20 border-b border-border/80 bg-white/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 md:px-6">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-3 md:px-6">
           <div className="flex items-center gap-2">
             <div className="flex size-10 items-center justify-center rounded-xl bg-primary text-primary-foreground" aria-hidden>
               <Compass className="size-5" />
@@ -143,15 +165,26 @@ export function TravelDiscovery() {
               <p className="text-[11px] text-muted-foreground">RAG-powered travel discovery</p>
             </div>
           </div>
+          <div className="flex flex-wrap items-center gap-2">
           <Badge className="hidden rounded-full bg-accent text-accent-foreground sm:inline-flex">
             Wikipedia · Wikivoyage · Local DB
           </Badge>
+          <a
+            href="/quality"
+            className="text-xs font-medium text-primary underline-offset-2 hover:underline"
+          >
+            Quality score
+          </a>
+          </div>
         </div>
       </header>
 
       <section className="travel-hero-gradient text-white">
         <div className="mx-auto max-w-6xl px-4 py-12 md:px-6 md:py-16">
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+          <motion.div
+            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
             <h1 className="max-w-3xl text-3xl font-bold leading-tight md:text-5xl">
               Find your perfect India trip — grounded in real travel knowledge
             </h1>
@@ -160,6 +193,12 @@ export function TravelDiscovery() {
               your itinerary. Every section shows its sources.
             </p>
           </motion.div>
+          <DestinationSpotlight
+            className="mt-10"
+            activeName={destinationHint}
+            onPick={pickDestination}
+          />
+          <HeroPhotoStrip />
         </div>
       </section>
 
@@ -344,7 +383,7 @@ export function TravelDiscovery() {
 
         {ragResult && !recommendMutation.isPending && (
           <div aria-live="polite">
-            <RagResultsPanel data={ragResult} />
+            <RagResultsPanel data={ragResult} vibe={vibe} />
           </div>
         )}
 

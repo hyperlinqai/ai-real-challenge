@@ -1,7 +1,7 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi, afterEach } from "vitest";
 import { z } from "zod";
 
-import { parseAndValidateBody } from "@/lib/api";
+import { clientSafeErrorMessage, parseAndValidateBody } from "@/lib/api";
 
 describe("parseAndValidateBody", () => {
   it("returns 400 for invalid JSON", async () => {
@@ -27,5 +27,21 @@ describe("parseAndValidateBody", () => {
     if (result.ok) {
       expect(result.data.name).toBe("Jaipur");
     }
+  });
+});
+
+describe("clientSafeErrorMessage", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it("returns error message in development", () => {
+    vi.stubEnv("NODE_ENV", "development");
+    expect(clientSafeErrorMessage(new Error("secret detail"), "fallback")).toBe("secret detail");
+  });
+
+  it("returns fallback in production", () => {
+    vi.stubEnv("NODE_ENV", "production");
+    expect(clientSafeErrorMessage(new Error("secret detail"), "fallback")).toBe("fallback");
   });
 });

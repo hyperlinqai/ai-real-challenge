@@ -122,12 +122,6 @@ export class RagOrchestratorService {
       fallbackCatalog[0]?.name ??
       "Jaipur";
 
-    const context = contextBuilder.build({
-      profile,
-      retrieval: merged,
-      primaryDestination: primaryDest,
-    });
-
     const destRecord = catalog.find(
       (d) => d.name.toLowerCase() === primaryDest.toLowerCase(),
     );

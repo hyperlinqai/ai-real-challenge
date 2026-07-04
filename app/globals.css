@@ -54,6 +54,17 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 @layer utilities {
   .travel-hero-gradient {
     background: linear-gradient(135deg, #003580 0%, #0057b8 45%, #0ea5e9 100%);

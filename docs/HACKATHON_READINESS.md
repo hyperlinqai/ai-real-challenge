@@ -68,11 +68,14 @@ Use this matrix when demoing or submitting. Status reflects the current codebase
 
 | Area | Status | Notes |
 |------|--------|--------|
-| Unit tests | Added | `npm test` — schemas, cosine similarity, context builder, API body parser |
-| E2E / UI | Gap | No Playwright/Cypress yet |
-| CI | Gap | No GitHub Action running test + build |
+| Unit tests | **Expanded** | `npm test` — schemas, API route, knowledge, context builder, utilities (35+ cases) |
+| CI | **Added** | `.github/workflows/ci.yml` — test, lint, build |
+| E2E / UI | Gap | No Playwright yet |
+| Coverage | Optional | `npm run test:coverage` |
 
-**Demo command:** `npm test && npm run build`
+**Demo command:** `npm test && npm run lint && npm run build`
+
+**Scorecard:** [`/quality`](/quality) for judges
 
 ---
 
